@@ -5,6 +5,7 @@ window = Tk()
 
 def windowSettings():
     window.title(string='BMI Calculator')
+    window.iconbitmap("bmi.ico")
 
 
 # open right in the middle of the screen
@@ -19,11 +20,30 @@ def center_window(rootWindow, width, height):
 
 
 windowSettings()
-center_window(window, width=250, height=200)
+center_window(window, width=250, height=230)
 
 
 def calculate(weight, height, resultText):
-    resultText.insert(weight, height)
+    if weight.isdigit() and height.isdigit():
+        weight = int(weight)
+        height = int(height)
+
+        if 0 < weight < 250 and 0 < height < 230:
+            bmi = weight / (height / 100) ** 2
+            if bmi < 18.5:
+                return 'Below ideal weight'
+            elif 18.5 <= bmi < 24.9:
+                return 'Ideal weight'
+            elif 24.9 <= bmi < 29.9:
+                return 'Above ideal weight'
+            elif 29.9 <= bmi < 39.9:
+                return 'Above ideal weight (obese)'
+            elif bmi > 39.9:
+                return 'Above ideal weight (morbidly obese)'
+        else:
+            resultText.config(text='Please enter a valid weight and height value')
+    else:
+        resultText.config(text='Please enter a valid weight and height value')
 
 
 def initWidgets():
@@ -39,12 +59,13 @@ def initWidgets():
     entryHeight = Entry(width=20)
     entryHeight.pack()
 
-    resultText = Text(width=5, height=5)
-    resultText.pack()
+    resultText = Label()
+    resultText.pack(padx=5, pady=5)
 
     calculateButton = Button(text='Calculate', bg='#eb901a', fg='white',
-                             command=lambda: calculate(weight=entryWeight.get(), height=entryHeight.get(),
-                                                       resultText=resultText))
+                             command=lambda: resultText.config(
+                                 text=calculate(weight=entryWeight.get(), height=entryHeight.get(),
+                                                resultText=resultText)))
     calculateButton.pack(padx=15, pady=15)
 
 
